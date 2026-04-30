@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/node_modules/
+afisha-frontend/
+
+# Environment
+.env
+*.env
+
+# Database
+*.db
+*.sqlite3
+*.db.old
+
+# Generated files
+backend/static/posters/
+backend/static/qr_codes/
+
+# Build
+frontend/build/
+dist/
+
+# Misc
+.DS_Store
+.vscode/
+*.log
