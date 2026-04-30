@@ -12,11 +12,8 @@ load_dotenv()
 
 from app.database import engine, SessionLocal
 from app.models.models import Base, User, Event
-from app.crud.crud import get_user_by_username
-from passlib.context import CryptContext
+from app.crud.crud import get_user_by_username, _hash_password
 from app.api import ai_parser
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 Base.metadata.create_all(bind=engine)
 
@@ -52,7 +49,7 @@ def create_superuser():
     try:
         admin_user = get_user_by_username(db, "admin")
         if not admin_user:
-            hashed_password = pwd_context.hash("admin")
+            hashed_password = _hash_password("admin")
             admin_user = User(
                 username="admin",
                 email="admin@afisha.ru",

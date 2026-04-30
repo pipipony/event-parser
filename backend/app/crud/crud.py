@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from passlib.context import CryptContext
+import bcrypt
 import random
 import string
 import math
@@ -10,7 +10,11 @@ from typing import Optional
 from app.models.models import User, Event, Ticket, RefreshToken
 from app.schemas.schemas import UserCreate, EventCreate, EventUpdate, TicketCreate
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def _hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+def _verify_password(plain: str, hashed: str) -> bool:
+    return bcrypt.checkpw(plain.encode(), hashed.encode())
 
 # User CRUD
 def get_user_by_email(db: Session, email: str):
@@ -20,7 +24,7 @@ def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
 def create_user(db: Session, user: UserCreate):
-    hashed_password = pwd_context.hash(user.password)
+    hashed_password = _hash_password(user.password)
     db_user = User(
         email=user.email,
         username=user.username,
@@ -36,7 +40,7 @@ def authenticate_user(db: Session, username: str, password: str):
     user = get_user_by_username(db, username)
     if not user:
         return False
-    if not pwd_context.verify(password, user.hashed_password):
+    if not _verify_password(password, user.hashed_password):
         return False
     return user
 
@@ -79,7 +83,7 @@ def get_event(db: Session, event_id: int):
     return db.query(Event).filter(Event.id == event_id).first()
 
 def create_event(db: Session, event: EventCreate, user_id: int):
-    # Создаем словарь данных события
+
     event_data = event.dict()
     
     # Обрабатываем поле date если это строка
