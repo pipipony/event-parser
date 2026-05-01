@@ -1,4 +1,3 @@
-# backend/app/schemas/schemas.py
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime, date
@@ -24,7 +23,7 @@ class EventBase(BaseModel):
     title: str
     description: Optional[str] = None
     date: datetime
-    time: Optional[str] = None  # ⚠️ ДОБАВЛЯЕМ ПОЛЕ TIME
+    time: Optional[str] = None
     location: str
     price: float = 0.0
     category: Optional[str] = None
@@ -37,7 +36,7 @@ class EventUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     date: Optional[datetime] = None
-    time: Optional[str] = None  # ⚠️ ДОБАВЛЯЕМ ПОЛЕ TIME
+    time: Optional[str] = None
     location: Optional[str] = None
     price: Optional[float] = None
     category: Optional[str] = None
@@ -91,7 +90,6 @@ class UserRoleUpdate(BaseModel):
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
-# AI Парсер схемы
 class ImageParseRequest(BaseModel):
     image_url: str
     use_llm: Optional[bool] = True

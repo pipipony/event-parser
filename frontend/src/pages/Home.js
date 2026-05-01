@@ -153,7 +153,7 @@ const Home = () => {
 
   useEffect(() => {
     syncUrlAndLoad(filters);
-  }, []);  // eslint-disable-line
+  }, []);
 
   const applyFilters = (newFilters) => {
     const updated = { ...newFilters, page: 1 };
@@ -245,7 +245,6 @@ const Home = () => {
         <h1 className="main-title">Все говорят: Отстань! А ты купи билет!</h1>
         <p className="subtitle">Выберите мероприятие по душе, даже в душе</p>
 
-        {/* ── Фильтры ─────────────────────────────────────────────────── */}
         <div style={{
           background: 'white', borderRadius: '16px', padding: '1.5rem',
           boxShadow: '0 4px 16px rgba(0,15,96,0.08)', marginBottom: '1.5rem',
@@ -309,7 +308,6 @@ const Home = () => {
               )}
             </div>
 
-            {/* Категории */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {CATEGORIES.map(cat => (
                 <button
@@ -331,7 +329,6 @@ const Home = () => {
           </form>
         </div>
 
-        {/* ── Результаты ──────────────────────────────────────────────── */}
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'left' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ color: '#666', fontSize: '0.9rem' }}>
@@ -354,7 +351,6 @@ const Home = () => {
             </div>
           )}
 
-          {/* ── Пагинация ──────────────────────────────────────────── */}
           {pagination.pages > 1 && (
             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '2rem', flexWrap: 'wrap' }}>
               <button

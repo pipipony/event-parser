@@ -16,9 +16,6 @@ def create_new_ticket(
     db: Session = Depends(get_db),
     current_user = Depends(require_permission("tickets:create"))
 ):
-    """
-    POST /api/tickets - Создать билет
-    """
     if ticket.user_id != current_user.id and getattr(current_user, "role", "user") != "admin":
         raise HTTPException(status_code=403, detail="Cannot create ticket for another user")
     qr_data = f"event:{ticket.event_id},user:{ticket.user_id}"
@@ -35,12 +32,8 @@ def get_my_tickets(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_active_user)
 ):
-    """
-    GET /api/tickets/my-tickets - Получить билеты текущего пользователя с информацией о событиях
-    """
     tickets = get_user_tickets(db, current_user.id)
-    
-    # Загружаем связанные данные событий
+
     for ticket in tickets:
         if ticket.event:
             db.refresh(ticket.event)

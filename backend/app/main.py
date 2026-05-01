@@ -124,7 +124,6 @@ async def api_status():
     return {"status": "API is running"}
 
 
-# ── SEO ──────────────────────────────────────────────────────────────────────
 
 @app.get("/robots.txt", response_class=PlainTextResponse, include_in_schema=False)
 async def robots_txt():

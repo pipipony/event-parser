@@ -1,4 +1,3 @@
-# backend/app/models/models.py
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, Text, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func

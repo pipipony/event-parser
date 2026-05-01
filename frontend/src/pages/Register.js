@@ -67,5 +67,4 @@ const Register = () => {
   );
 };
 
-// Убедись что это export default!
 export default Register;

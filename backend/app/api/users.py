@@ -20,16 +20,10 @@ def read_own_tickets(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_active_user)
 ):
-    """
-    GET /api/users/me/tickets - Получить билеты пользователя с полной информацией о событиях
-    """
-    # Получаем билеты с загруженными событиями
     tickets = db.query(Ticket).filter(Ticket.user_id == current_user.id).all()
-    
-    # Явно загружаем связанные события для каждого билета
+
     for ticket in tickets:
         if ticket.event:
-            # Обновляем объект события из БД
             db.refresh(ticket.event)
     
     return tickets

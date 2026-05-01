@@ -16,7 +16,6 @@ def _hash_password(password: str) -> str:
 def _verify_password(plain: str, hashed: str) -> bool:
     return bcrypt.checkpw(plain.encode(), hashed.encode())
 
-# User CRUD
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
@@ -44,7 +43,6 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
-# Event CRUD
 def get_events(
     db: Session,
     skip: int = 0,
@@ -85,40 +83,32 @@ def get_event(db: Session, event_id: int):
 def create_event(db: Session, event: EventCreate, user_id: int):
 
     event_data = event.dict()
-    
-    # Обрабатываем поле date если это строка
+
     if isinstance(event_data.get('date'), str):
         try:
-            # Пробуем разные форматы даты
             date_str = event_data['date']
             if 'T' in date_str:
-                # ISO формат: "2024-01-20T19:30:00"
                 event_data['date'] = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
             else:
-                # Простой формат: "2024-01-20"
                 event_data['date'] = datetime.strptime(date_str, '%Y-%m-%d')
         except (ValueError, TypeError) as e:
-            # Если не удалось распарсить, используем текущую дату
             event_data['date'] = datetime.now()
             print(f"⚠️ Ошибка парсинга даты: {e}, используем текущую дату")
-    
-    # Фильтруем только допустимые поля модели Event
+
     allowed_fields = {
         'title', 'description', 'date', 'time', 'location', 
         'price', 'category', 'max_attendees'
     }
     filtered_data = {k: v for k, v in event_data.items() if k in allowed_fields}
-    
-    # Добавляем логирование для диагностики
+
     print(f"🔧 Создание события пользователем {user_id}")
     print(f"📋 Данные события: {filtered_data}")
-    
-    # Создаем событие с обработанными данными
+
     try:
         db_event = Event(
             **filtered_data,
             created_by=user_id,
-            status='pending'  # Статус по умолчанию
+            status='pending'
         )
         
         db.add(db_event)
@@ -136,10 +126,9 @@ def update_event(db: Session, event_id: int, event_update: EventUpdate):
     db_event = get_event(db, event_id)
     if not db_event:
         return None
-    
+
     update_data = event_update.dict(exclude_unset=True)
-    
-    # Обрабатываем поле date если оно есть в обновлении
+
     if 'date' in update_data and isinstance(update_data['date'], str):
         try:
             date_str = update_data['date']
@@ -149,10 +138,8 @@ def update_event(db: Session, event_id: int, event_update: EventUpdate):
                 update_data['date'] = datetime.strptime(date_str, '%Y-%m-%d')
         except (ValueError, TypeError) as e:
             print(f"⚠️ Ошибка парсинга даты при обновлении: {e}")
-            # Не обновляем дату если ошибка
             del update_data['date']
-    
-    # Обновляем поля
+
     for field, value in update_data.items():
         if hasattr(db_event, field):
             setattr(db_event, field, value)
@@ -162,7 +149,6 @@ def update_event(db: Session, event_id: int, event_update: EventUpdate):
     return db_event
 
 def delete_event(db: Session, event_id: int):
-    """Удаление события"""
     db_event = get_event(db, event_id)
     if db_event:
         db.delete(db_event)
@@ -180,7 +166,6 @@ def moderate_event(db: Session, event_id: int, status: str, moderator_id: int):
     db.refresh(db_event)
     return db_event
 
-# Ticket CRUD
 def generate_ticket_number():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
@@ -188,22 +173,19 @@ def create_ticket(db: Session, ticket: TicketCreate, qr_code_url: str = None):
     event = get_event(db, ticket.event_id)
     if not event:
         return None
-    
-    # Проверяем доступность мест
+
     if event.max_attendees and event.current_attendees >= event.max_attendees:
         return None
     
     ticket_number = generate_ticket_number()
-    
-    # Создаем билет
+
     db_ticket = Ticket(
         event_id=ticket.event_id,
         user_id=ticket.user_id,
         ticket_number=ticket_number,
         qr_code_url=qr_code_url or f"/qr_codes/{ticket_number}.png"
     )
-    
-    # Увеличиваем счетчик участников
+
     event.current_attendees += 1
     
     db.add(db_ticket)
@@ -221,10 +203,8 @@ def get_ticket(db: Session, ticket_id: int):
     return db.query(Ticket).filter(Ticket.id == ticket_id).first()
 
 def delete_ticket(db: Session, ticket_id: int):
-    """Удаление билета"""
     db_ticket = get_ticket(db, ticket_id)
     if db_ticket:
-        # Уменьшаем счетчик участников события
         event = get_event(db, db_ticket.event_id)
         if event and event.current_attendees > 0:
             event.current_attendees -= 1
@@ -234,7 +214,6 @@ def delete_ticket(db: Session, ticket_id: int):
         return True
     return False
 
-# Admin functions
 def get_all_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
@@ -284,6 +263,6 @@ def revoke_refresh_token(db: Session, token_jti: str):
 def revoke_all_user_refresh_tokens(db: Session, user_id: int):
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user_id,
-        RefreshToken.revoked == False,  # noqa: E712
+        RefreshToken.revoked == False,
     ).update({"revoked": True}, synchronize_session=False)
     db.commit()

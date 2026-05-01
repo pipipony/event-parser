@@ -22,10 +22,8 @@ const Profile = () => {
       setError('');
       const response = await usersAPI.getMyTickets();
       
-      // Проверяем структуру ответа
       console.log('Tickets response:', response.data);
-      
-      // Убеждаемся, что это массив
+
       if (Array.isArray(response.data)) {
         setTickets(response.data);
       } else {
@@ -67,7 +65,6 @@ const Profile = () => {
     return user?.username?.charAt(0).toUpperCase() || 'U';
   };
 
-  // Функция для безопасного получения информации о событии
   const getEventInfo = (ticket) => {
     if (!ticket.event) {
       return {

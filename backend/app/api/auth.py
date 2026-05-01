@@ -23,7 +23,6 @@ from app.schemas.schemas import Token, UserCreate, RefreshTokenRequest
 
 load_dotenv()
 
-# Настройки JWT
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-key-change-me")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
@@ -105,7 +104,6 @@ def require_admin(current_user=Depends(get_current_active_user)):
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
 
-# Роутер аутентификации
 from fastapi import APIRouter
 
 router = APIRouter()

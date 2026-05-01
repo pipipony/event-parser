@@ -19,7 +19,6 @@ const Admin = () => {
     category: ''
   });
 
-  // Состояния для создания события
   const [creatingEvent, setCreatingEvent] = useState(false);
   const [newEventForm, setNewEventForm] = useState({
     title: '',
@@ -31,13 +30,11 @@ const Admin = () => {
     max_attendees: ''
   });
 
-  // Состояния для парсера афиш
   const [parsing, setParsing] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [parsedData, setParsedData] = useState(null);
   const [parseError, setParseError] = useState('');
 
-  // Единый стиль для всех кнопок
   const buttonStyle = {
     background: 'transparent',
     color: '#000F60',
@@ -84,7 +81,6 @@ const Admin = () => {
     fontSize: '0.8rem'
   };
 
-  // Проверка прав доступа - если не админ, перенаправляем на главную
   useEffect(() => {
     if (!user) {
       navigate('/login');
@@ -210,7 +206,6 @@ const Admin = () => {
     try {
       console.log('🟡 Начало обновления события ID:', eventId);
 
-      // Валидация обязательных полей
       if (!editForm.title.trim()) {
         alert('Название события обязательно для заполнения');
         return;
@@ -224,7 +219,6 @@ const Admin = () => {
         return;
       }
 
-      // Используем ТОЛЬКО те поля, которые есть в Swagger
       const updateData = {
         title: editForm.title.trim(),
         description: editForm.description.trim(),
@@ -257,7 +251,6 @@ const Admin = () => {
 
   const createNewEvent = async () => {
     try {
-      // Валидация обязательных полей
       if (!newEventForm.title.trim()) {
         alert('Название события обязательно для заполнения');
         return;
@@ -317,7 +310,6 @@ const Admin = () => {
     }
   };
 
-  // Функции для парсера афиш
   const parseImage = async () => {
     if (!imageUrl.trim()) {
       setParseError('Введите URL изображения');
@@ -422,7 +414,6 @@ const Admin = () => {
     );
   };
 
-  // Если не админ, не показываем ничего (useEffect перенаправит)
   if (!isAdmin) {
     return null;
   }
@@ -475,7 +466,6 @@ const Admin = () => {
             <p style={{color: '#666', fontSize: '1.1rem'}}>Управление событиями и парсинг афиш</p>
           </div>
 
-          {/* 🎪 РАЗДЕЛ ПАРСЕРА АФИШ */}
           <div style={{
             background: 'white', 
             borderRadius: '15px', 
@@ -584,7 +574,6 @@ const Admin = () => {
             )}
           </div>
 
-          {/* 📝 РАЗДЕЛ РУЧНОГО СОЗДАНИЯ СОБЫТИЙ */}
           <div style={{
             background: 'white', 
             borderRadius: '15px', 
@@ -782,7 +771,6 @@ const Admin = () => {
             )}
           </div>
 
-          {/* 📋 РАЗДЕЛ УПРАВЛЕНИЯ СОБЫТИЯМИ */}
           <div style={{
             background: 'white', 
             borderRadius: '15px', 
@@ -841,7 +829,6 @@ const Admin = () => {
                   position: 'relative'
                 }}>
                   {editingEvent === event.id ? (
-                    // Форма редактирования
                     <div>
                       <h3 style={{color: '#17a2b8', marginBottom: '1rem'}}>✏️ Редактирование события</h3>
                       <div style={{display: 'grid', gap: '1rem', marginBottom: '1rem'}}>
@@ -975,7 +962,6 @@ const Admin = () => {
                       </div>
                     </div>
                   ) : (
-                    // Отображение события
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem'}}>
                       <div style={{flex: 1}}>
                         <h3 style={{color: '#000F60', marginBottom: '0.5rem', fontSize: '1.3rem'}}>
@@ -1032,7 +1018,6 @@ const Admin = () => {
                       </div>
                       
                       <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '140px'}}>
-                        {/* Статус */}
                         {event.status !== 'approved' && (
                           <button
                             onClick={() => setEventStatus(event.id, 'approved')}

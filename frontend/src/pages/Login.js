@@ -29,16 +29,14 @@ const Login = () => {
       if (result.success) {
         navigate('/');
       } else {
-        // Правильно извлекаем сообщение об ошибке
-        const errorMessage = result.error?.message || 
+        const errorMessage = result.error?.message ||
                             result.error?.detail || 
                             result.error || 
                             'Произошла ошибка при входе';
         setError(errorMessage);
       }
     } catch (err) {
-      // Обрабатываем неожиданные ошибки
-      const errorMessage = err?.response?.data?.detail || 
+      const errorMessage = err?.response?.data?.detail ||
                           err?.message || 
                           'Произошла неизвестная ошибка';
       setError(errorMessage);
