@@ -5,17 +5,11 @@ python-multipart==0.0.6
 python-jose[cryptography]==3.3.0
 bcrypt==4.0.1
 pillow==10.1.0
-opencv-python==4.8.1.78
-pytesseract==0.3.10
 python-dotenv==1.0.0
 qrcode[pil]==7.4.2
 pydantic==2.7.0
 requests==2.31.0
-numpy==1.24.3
 email-validator==2.1.0
-# OCR for multilingual text
-easyocr==1.7.1
-matplotlib==3.9.0
 # S3 / MinIO storage
 boto3==1.34.0
 # Testing
